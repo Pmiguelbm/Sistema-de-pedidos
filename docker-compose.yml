@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  localstack:
+    image: localstack/localstack:latest
+    container_name: localstack
+    ports:
+      - "4566:4566"   # Edge port para todos serviços
+    environment:
+      - SERVICES=apigateway,lambda,dynamodb,sqs,s3
+      - DEBUG=1
+      - DEFAULT_REGION=us-east-1
+      - LAMBDA_EXECUTOR=docker
+    volumes:
+      - ./localstack/init:/etc/localstack/init
+      - ./lambdas:/opt/localstack/lambdas
+      - /var/run/docker.sock:/var/run/docker.sock
+
+    # Mantém os logs acessíveis para ver URL do API
+    tty: true
+    restart: unless-stopped
